@@ -1,17 +1,17 @@
+
 const nodemailer = require('nodemailer');
 const { google } = require('googleapis');
 const gmail = google.gmail('v1');
 
-// Replace these values with your actual credentials from your Google Cloud Platform project
+// These id's and secrets should come from .env file.
 const CLIENT_ID = '399931730160-am587ub5ebckd98mormt29n3va0vhpml.apps.googleusercontent.com';
 const CLEINT_SECRET = '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';
 const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
 const REFRESH_TOKEN = '1//04bCUqewW0592CgYIARAAGAQSNwF-L9Ir8xClpDrwYpC5X4Gk_MKKV9G7Rw8AViFB8EJc8vX6ZxrumZa5LHfY6QGS6zFVA-eomhs';
 
-
 const oAuth2Client = new google.auth.OAuth2(
   CLIENT_ID,
-  CLIENT_SECRET,
+  CLEINT_SECRET,
   REDIRECT_URI
 );
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
@@ -24,17 +24,17 @@ async function sendMail() {
       service: 'gmail',
       auth: {
         type: 'OAuth2',
-        user: 'YOUR_SENDER_EMAIL', // Replace with the sender email
+        user: 'vishnukoyyada03@gmail.com',
         clientId: CLIENT_ID,
-        clientSecret: CLIENT_SECRET,
+        clientSecret: CLEINT_SECRET,
         refreshToken: REFRESH_TOKEN,
         accessToken: accessToken,
       },
     });
 
     const mailOptions = {
-      from: 'vishnuvardhan vishnukoyyada03@gmail.com>', // Replace with sender's name and email
-      to: 'vishnukoyyada01@gmail.com', // Replace with recipient's email
+      from: 'vishnuvardhan <vishnukoyyada03@gmail.com>',
+      to: 'vishnukoyyada01@gmail.com',
       subject: 'Hello from gmail using API',
       text: 'Hello from gmail email using API',
       html: '<h1>Hello from gmail email using API</h1>',
@@ -46,6 +46,12 @@ async function sendMail() {
     return error;
   }
 }
+
+sendMail()
+  .then((result) => console.log('Email sent...', result))
+  .catch((error) => console.log(error.message));
+
+
 
 async function fetchEmails() {
   const res = await gmail.users.messages.list({
@@ -61,8 +67,6 @@ async function checkIfReplied(messageId) {
     userId: 'me',
     id: messageId,
   });
-
-  // Check if the email has replies
   return res.data.payload && res.data.payload.headers.some(header => header.name === 'In-Reply-To');
 }
 
@@ -101,3 +105,8 @@ async function sendReplyAndLabelEmails() {
 }
 
 sendReplyAndLabelEmails();
+
+/*
+
+Hello just checking with the branches...
+*/
